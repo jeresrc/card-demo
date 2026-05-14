@@ -3,6 +3,20 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@property --card-c1 { syntax: '<color>'; inherits: true; initial-value: #7558ad; }
+@property --card-c2 { syntax: '<color>'; inherits: true; initial-value: #694c9a; }
+@property --card-c3 { syntax: '<color>'; inherits: true; initial-value: #5a3f88; }
+@property --card-bloom { syntax: '<color>'; inherits: true; initial-value: rgba(247, 227, 194, 0); }
+@property --card-text { syntax: '<color>'; inherits: true; initial-value: rgba(255, 255, 255, 0.95); }
+@property --card-text-muted { syntax: '<color>'; inherits: true; initial-value: rgba(255, 255, 255, 0.70); }
+@property --card-text-faint { syntax: '<color>'; inherits: true; initial-value: rgba(255, 255, 255, 0.55); }
+@property --card-svg { syntax: '<color>'; inherits: true; initial-value: rgba(255, 255, 255, 0.35); }
+@property --card-shadow { syntax: '<color>'; inherits: true; initial-value: rgba(50, 30, 95, 0.55); }
+@property --card-shadow-2 { syntax: '<color>'; inherits: true; initial-value: rgba(0, 0, 0, 0.35); }
+@property --card-holo-hue { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
+@property --card-border-c { syntax: '<color>'; inherits: true; initial-value: #7c3aed; }
+@property --card-border-w { syntax: '<length>'; inherits: true; initial-value: 3px; }
+
 @theme {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
 }

@@ -6,10 +6,115 @@ export const Route = createFileRoute('/')({ component: App })
 const clamp = (n: number, a: number, b: number) =>
   Math.max(a, Math.min(b, n))
 
+// Silhouette of the heart + cat decoration, used as a CSS mask so the
+// holographic reflex only paints inside the SVG shape.
+const HEART_CAT_SILHOUETTE_SVG =
+  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 138 169' fill='white'>" +
+  "<path fill-rule='evenodd' clip-rule='evenodd' d='M115.874 158.321C115.667 157.68 115.48 157.116 115.307 156.547C114.483 153.827 113.777 151.079 113.23 148.299C112.505 144.64 112.031 140.953 111.798 137.234C111.641 134.765 111.591 132.294 111.635 129.82C111.689 126.701 111.882 123.585 112.159 120.475C112.48 116.884 112.824 113.294 113.118 109.701C113.352 106.847 113.44 103.986 113.299 101.127C113.093 96.892 112.187 92.8018 110.524 88.858C109.68 86.8626 108.838 84.8694 107.817 82.9449C107.725 82.7703 107.66 82.6157 107.76 82.402C108.905 79.994 110.056 77.5839 111.561 75.3452C113.017 73.1781 114.815 71.285 116.783 69.5257C117.036 69.3008 117.268 69.0581 117.543 68.8642C118.01 68.5381 118.246 68.0979 118.425 67.5961C119.279 65.2125 119.918 62.7802 120.4 60.3142C121.079 56.8168 121.686 53.3057 122.331 49.805C122.518 48.8036 122.729 47.8039 122.95 46.8061C123.021 46.4978 123.089 46.1717 123.353 45.9281C123.656 45.9581 123.816 46.1646 123.962 46.3533C124.406 46.9238 124.852 47.4988 125.246 48.1027C126.883 50.6087 128.263 53.2425 129.568 55.9123C129.919 56.6307 130.256 57.3541 130.609 58.0972C130.804 58.0034 130.799 57.8309 130.846 57.6913C131.445 55.8139 131.858 53.8966 132.258 51.9748C132.583 50.4071 132.916 48.8367 133.273 47.2725C133.383 46.7838 133.57 46.3111 133.73 45.8346C133.764 45.7315 133.829 45.6368 133.902 45.4941C134.044 45.6465 134.158 45.7592 134.261 45.8809C136.096 48.0525 137.422 50.4836 138.399 53.0879C139.656 56.4486 140.327 59.917 140.548 63.4727C140.649 65.0852 140.669 66.7001 140.579 68.318C140.571 68.4612 140.577 68.6063 140.575 68.7878C140.746 68.8578 140.915 68.9235 141.086 68.9934C142.69 69.6629 144.313 70.2864 145.892 71.0041C147.699 71.822 149.352 72.8666 150.735 74.2523C151.623 75.1439 152.347 76.1377 152.915 77.2331C152.973 77.3473 153.042 77.4633 153.072 77.5896C153.281 78.482 153.844 79.1628 154.523 79.7718C155.401 80.5571 156.405 81.1822 157.45 81.7472C159.887 83.0623 162.475 84.069 165.102 84.9932C169.483 86.5349 173.959 87.8015 178.47 88.9694C179.047 89.1211 179.506 89.4371 179.893 89.805C180.211 90.1093 180.166 90.5869 180.086 91.0042C179.655 93.1901 179.019 95.3202 178.079 97.366C177.321 99.0098 176.373 100.545 175.158 101.934C173.086 104.307 170.473 105.91 167.357 106.814C165.669 107.307 163.923 107.529 162.181 107.728C158.811 108.109 155.432 108.431 152.061 108.803C150.16 109.011 148.28 109.343 146.451 109.894C142.869 110.977 140.552 113.228 139.399 116.58C138.363 119.597 137.473 122.658 136.632 125.724C135.861 128.543 135.095 131.364 134.117 134.131C132.342 139.163 129.626 143.716 126.165 147.893C123.115 151.571 119.696 154.932 116.113 158.146C116.064 158.191 116.009 158.224 115.874 158.325Z'/>" +
+  "<path d='M124.283 196.377C123.219 196.407 122.139 196.117 121.222 195.479L116.538 192.223C61.3415 153.869 9.20699 117.641 2.19015 71.4246C0.280999 58.8454 3.74309 46.0273 11.9462 35.327C19.6751 25.245 30.8006 17.8593 43.2756 14.5335C61.4956 9.67811 85.0939 13.5908 101.034 36.9983C104.838 27.0108 110.893 18.7263 118.892 12.6795C128.562 5.36484 141.067 1.42209 154.109 1.57601C166.977 1.72569 179.528 5.7396 189.453 12.8766C200.281 20.6639 206.992 31.307 208.867 43.6537C215.518 87.5138 177.975 133.449 138.23 182.084C134.844 186.227 131.444 190.389 128.056 194.567C127.125 195.715 125.72 196.339 124.286 196.38M56.2888 21.6887C52.9122 21.7841 49.4532 22.294 45.9349 23.232C26.4695 28.4204 8.39814 47.3777 11.8519 70.1255C18.3069 112.635 68.8742 147.774 122.412 184.972L123.206 185.525C125.624 182.554 128.046 179.588 130.462 176.636C168.942 129.551 205.289 85.0791 199.203 44.9506C196.652 28.1263 180.285 10.9341 153.945 10.6245C125.183 10.2822 111.038 30.8377 107.385 50.1804C107.013 52.1497 105.297 53.6619 103.16 53.9102C101.022 54.1536 98.9711 53.0755 98.1091 51.2488C88.8891 31.7198 73.7058 21.1968 56.2888 21.6887Z'/>" +
+  "<path d='M112.537 98.7342C112.605 99.3031 112.67 99.8697 112.737 100.438C112.73 100.53 112.708 100.624 112.716 100.715C112.757 101.301 112.83 101.885 112.846 102.473C112.873 103.42 112.88 104.371 112.875 105.319C112.875 106.106 112.863 106.896 112.824 107.681C112.779 108.617 112.71 109.553 112.636 110.487C112.531 111.83 112.42 113.17 112.293 114.512C112.136 116.175 111.943 117.834 111.798 119.497C111.62 121.591 111.46 123.687 111.314 125.784C111.226 127.035 111.163 128.287 111.13 129.541C111.097 130.726 111.104 131.912 111.115 133.095C111.124 134.179 111.142 135.261 111.19 136.346C111.234 137.384 111.293 138.421 111.398 139.452C111.552 141.002 111.75 142.548 111.939 144.094C112.002 144.598 112.082 145.1 112.173 145.601C112.341 146.537 112.52 147.473 112.703 148.408C112.821 149.007 112.946 149.605 113.083 150.201C113.231 150.841 113.396 151.477 113.559 152.114C113.725 152.765 113.883 153.422 114.068 154.07C114.31 154.913 114.565 155.755 114.827 156.595C115.01 157.176 115.21 157.752 115.403 158.333C115.369 158.338 115.335 158.342 115.298 158.343C115.245 158.308 115.193 158.266 115.133 158.236C112.339 156.868 109.608 155.402 106.979 153.785C103.568 151.692 100.36 149.377 97.4341 146.742C94.3397 143.949 91.6759 140.852 89.4016 137.474C87.8392 135.15 86.4681 132.732 85.1454 130.291C83.636 127.504 82.1776 124.692 80.4772 121.996C79.4137 120.302 78.2945 118.647 76.9825 117.103C76.2518 116.247 75.3587 115.555 74.2356 115.145C72.815 114.626 71.3567 114.689 69.9138 115.033C68.5882 115.349 67.2837 115.736 65.9765 116.105C64.1339 116.623 62.2821 117.081 60.3302 117.034C59.0951 117.006 57.9017 116.801 56.7704 116.358C55.5198 115.87 54.5279 115.06 53.6096 114.172C52.1588 112.761 50.9562 111.179 49.7339 109.606C48.9141 108.546 48.1035 107.478 47.2782 106.405C47.3575 106.338 47.434 106.276 47.5108 106.211C48.3932 105.484 49.1476 104.66 49.782 103.748C50.947 102.079 51.71 100.252 52.1884 98.3388C52.7287 96.1899 53.1755 94.0237 53.6617 91.8631C54.1043 89.9021 54.604 87.9573 55.4446 86.0945C56.5758 83.5856 58.2706 81.4733 60.7466 79.9167C60.9418 79.795 60.9422 79.6324 60.9668 79.4622C61.1707 77.9962 60.8567 76.6072 60.2322 75.265C59.5922 73.8831 58.6719 72.6585 57.7343 71.4341C56.8502 70.28 55.9711 69.1188 55.1254 67.9388C54.6837 67.3271 54.4165 66.639 54.2707 65.9117C54.2482 65.8011 54.1834 65.6801 54.3854 65.6254C55.1793 65.4113 55.9881 65.297 56.8125 65.2982C58.3266 65.3025 59.7783 65.6158 61.1529 66.159C62.7807 66.8063 64.3739 67.5236 65.9855 68.2072C67.1156 68.6881 68.2638 69.1215 69.4968 69.343C69.6671 69.3739 69.7643 69.3421 69.8713 69.2165C70.493 68.4745 70.5243 67.6664 70.233 66.821C69.931 65.9422 69.3987 65.1725 68.8643 64.4029C68.2833 63.5587 67.693 62.7192 67.1459 61.8563C66.8736 61.4295 66.723 60.9543 66.8654 60.4397C66.9234 60.2308 67.0403 60.1137 67.2841 60.1491C67.8509 60.2358 68.4311 60.275 68.9752 60.4225C70.3968 60.8105 71.6031 61.5588 72.7381 62.3916C73.8981 63.2439 75.0176 64.1354 76.1636 65.0014C77.1111 65.7149 78.0849 66.3917 79.2167 66.857C80.5746 67.416 82.0283 67.6226 83.4906 67.7998C84.8866 67.9697 86.3052 68.0723 87.666 68.3839C92.4668 69.4767 96.571 71.7083 100.068 74.8643C103.057 77.5622 105.347 80.7102 107.208 84.1309C108.199 85.9509 109.068 87.8215 109.863 89.7185C110.647 91.6002 111.4 93.4894 111.87 95.4581C112.11 96.4811 112.267 97.5157 112.461 98.5446C112.472 98.6135 112.513 98.6725 112.537 98.7342Z'/>" +
+  '</svg>'
+const HEART_CAT_MASK_URL = `url("data:image/svg+xml;utf8,${encodeURIComponent(HEART_CAT_SILHOUETTE_SVG)}")`
+
+// Tileable monochrome film-grain — applied as an overlay on the whole card.
+const NOISE_SVG =
+  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'>" +
+  "<filter id='n'>" +
+  "<feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/>" +
+  "<feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/>" +
+  '</filter>' +
+  "<rect width='100%' height='100%' filter='url(#n)' opacity='0.55'/>" +
+  '</svg>'
+const NOISE_URL = `url("data:image/svg+xml;utf8,${encodeURIComponent(NOISE_SVG)}")`
+
+type CardVariant = {
+  kicker: string
+  vars: Record<string, string>
+}
+
+const VARIANTS: CardVariant[] = [
+  {
+    kicker: 'AMAR 100',
+    vars: {
+      '--card-c1': '#7558ad',
+      '--card-c2': '#694c9a',
+      '--card-c3': '#5a3f88',
+      '--card-bloom': 'rgba(247, 227, 194, 0)',
+      '--card-text': 'rgba(255, 255, 255, 0.95)',
+      '--card-text-muted': 'rgba(255, 255, 255, 0.70)',
+      '--card-text-faint': 'rgba(255, 255, 255, 0.55)',
+      '--card-svg': 'rgba(255, 255, 255, 0.35)',
+      '--card-shadow': 'rgba(50, 30, 95, 0.55)',
+      '--card-shadow-2': 'rgba(0, 0, 0, 0.35)',
+      '--card-holo-hue': '0deg',
+      '--card-border-c': '#7c3aed',
+      '--card-border-w': '4px',
+    },
+  },
+  {
+    kicker: 'AMAR 200',
+    vars: {
+      '--card-c1': '#d8c3ef',
+      '--card-c2': '#e3cff2',
+      '--card-c3': '#c9b2e6',
+      '--card-bloom': 'rgba(247, 227, 194, 0.85)',
+      '--card-text': '#502D8A',
+      '--card-text-muted': '#9372D9',
+      '--card-text-faint': '#9372D9',
+      '--card-svg': 'rgba(58, 31, 107, 0.18)',
+      '--card-shadow': 'rgba(140, 110, 180, 0.35)',
+      '--card-shadow-2': 'rgba(50, 30, 95, 0.18)',
+      '--card-holo-hue': '40deg',
+      '--card-border-c': '#7c3aed',
+      '--card-border-w': '4px',
+    },
+  },
+  {
+    kicker: 'AMAR PREMEDIC',
+    vars: {
+      '--card-c1': '#3fb8ae',
+      '--card-c2': '#33aba2',
+      '--card-c3': '#239489',
+      '--card-bloom': 'rgba(255, 255, 255, 0)',
+      '--card-text': 'rgba(255, 255, 255, 0.95)',
+      '--card-text-muted': 'rgba(255, 255, 255, 0.70)',
+      '--card-text-faint': 'rgba(255, 255, 255, 0.55)',
+      '--card-svg': 'rgba(15, 70, 65, 0.22)',
+      '--card-shadow': 'rgba(20, 90, 85, 0.45)',
+      '--card-shadow-2': 'rgba(0, 30, 28, 0.30)',
+      '--card-holo-hue': '170deg',
+      '--card-border-c': '#42edea',
+      '--card-border-w': '4px',
+    },
+  },
+]
+
+const CARD_TRANSITION = [
+  '--card-c1',
+  '--card-c2',
+  '--card-c3',
+  '--card-bloom',
+  '--card-text',
+  '--card-text-muted',
+  '--card-text-faint',
+  '--card-svg',
+  '--card-shadow',
+  '--card-shadow-2',
+  '--card-holo-hue',
+  '--card-border-c',
+  '--card-border-w',
+]
+  .map((p) => `${p} 200ms ease`)
+  .join(', ')
+
 function App() {
   const stageRef = useRef<HTMLDivElement>(null)
   const cardRef = useRef<HTMLElement>(null)
   const [needsPermission, setNeedsPermission] = useState(false)
+  const [variantIndex, setVariantIndex] = useState(0)
+  const variant = VARIANTS[variantIndex]
+  const cycleVariant = () =>
+    setVariantIndex((i) => (i + 1) % VARIANTS.length)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -18,13 +123,16 @@ function App() {
     const card = cardRef.current
     if (!card) return
 
-    const target = { mx: 50, my: 50, tx: 0, ty: 0 }
+    const target = { mx: 50, my: 50, fx: 50, fy: 50, tx: 0, ty: 0, hi: 0 }
     const current = { ...target }
     let lastPointerAt = 0
 
     const apply = () => {
       card.style.setProperty('--mx', current.mx.toFixed(2))
       card.style.setProperty('--my', current.my.toFixed(2))
+      card.style.setProperty('--fx', current.fx.toFixed(2))
+      card.style.setProperty('--fy', current.fy.toFixed(2))
+      card.style.setProperty('--hi', current.hi.toFixed(3))
       card.style.setProperty('--tx', `${current.tx.toFixed(2)}deg`)
       card.style.setProperty('--ty', `${current.ty.toFixed(2)}deg`)
     }
@@ -33,6 +141,9 @@ function App() {
       const k = 0.12
       current.mx += (target.mx - current.mx) * k
       current.my += (target.my - current.my) * k
+      current.fx += (target.fx - current.fx) * k
+      current.fy += (target.fy - current.fy) * k
+      current.hi += (target.hi - current.hi) * k
       current.tx += (target.tx - current.tx) * k
       current.ty += (target.ty - current.ty) * k
       apply()
@@ -40,7 +151,7 @@ function App() {
     }
     let raf = requestAnimationFrame(loop)
 
-    const MAX_TILT = 10
+    const MAX_TILT = 16
     const FALLOFF = 380 // px — distance at which influence is halved
 
     const onPointerMove = (e: PointerEvent) => {
@@ -58,24 +169,34 @@ function App() {
       target.ty = clamp(-dirY * MAX_TILT * strength, -MAX_TILT, MAX_TILT)
       target.mx = clamp(50 + dirX * 15 * strength, 0, 100)
       target.my = clamp(50 + dirY * 15 * strength, 0, 100)
+      // Full-range light position (relative to the card, can leave its bounds)
+      target.fx = ((e.clientX - rect.left) / rect.width) * 100
+      target.fy = ((e.clientY - rect.top) / rect.height) * 100
+      target.hi = strength // overall holo intensity tied to proximity
     }
     const onPointerLeave = () => {
       target.mx = 50
       target.my = 50
+      target.fx = 50
+      target.fy = 50
       target.tx = 0
       target.ty = 0
+      target.hi = 0
     }
 
     const onOrient = (e: DeviceOrientationEvent) => {
       // Pointer takes priority for ~2s after any movement
       if (performance.now() - lastPointerAt < 2000) return
       if (e.gamma == null && e.beta == null) return
-      const gx = clamp((e.gamma ?? 0) / 4, -9, 9)
-      const gy = clamp((e.beta ?? 0) / 5, -9, 9)
+      const gx = clamp((e.gamma ?? 0) / 2.5, -16, 16)
+      const gy = clamp((e.beta ?? 0) / 3.5, -16, 16)
       target.tx = gx
       target.ty = -gy
       target.mx = clamp(50 + gx * 5, 0, 100)
       target.my = clamp(50 + gy * 5, 0, 100)
+      target.fx = clamp(50 + gx * 5, 0, 100)
+      target.fy = clamp(50 + gy * 5, 0, 100)
+      target.hi = 1
     }
 
     window.addEventListener('pointermove', onPointerMove)
@@ -125,32 +246,56 @@ function App() {
     >
       <article
         ref={cardRef}
-        className="relative isolate aspect-[7/9] w-[min(360px,82vw)] overflow-hidden rounded-[24px] px-8 py-7 text-white will-change-transform"
+        onClick={cycleVariant}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            cycleVariant()
+          }
+        }}
+        // biome-ignore lint/a11y/useSemanticElements: card stays an <article> for layout while remaining clickable
+        // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: card stays an <article> for layout while remaining clickable
+        role="button"
+        tabIndex={0}
+        aria-label={`Cambiar variante (actual: ${variant.kicker})`}
+        className="relative isolate aspect-[7/9] w-[min(360px,82vw)] cursor-pointer select-none overflow-hidden rounded-[24px] px-8 py-7 will-change-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
         style={{
+          ...(variant.vars as React.CSSProperties),
           background:
-            'linear-gradient(160deg, #7558ad 0%, #694C9A 55%, #5a3f88 100%)',
+            'radial-gradient(circle at 50% 56%, var(--card-bloom) 0%, transparent 55%),' +
+            ' linear-gradient(160deg, var(--card-c1) 0%, var(--card-c2) 55%, var(--card-c3) 100%)',
           boxShadow:
-            'calc((50 - var(--mx, 50)) * 0.6px) calc((50 - var(--my, 50)) * 0.6px + 34px) 70px -22px rgba(50, 30, 95, 0.55),' +
-            ' calc((50 - var(--mx, 50)) * 0.25px) calc((50 - var(--my, 50)) * 0.25px + 14px) 28px -12px rgba(0, 0, 0, 0.35),' +
+            'calc((50 - var(--mx, 50)) * 0.6px) calc((50 - var(--my, 50)) * 0.6px + 34px) 70px -22px var(--card-shadow),' +
+            ' calc((50 - var(--mx, 50)) * 0.25px) calc((50 - var(--my, 50)) * 0.25px + 14px) 28px -12px var(--card-shadow-2),' +
             ' 0 2px 4px rgba(0, 0, 0, 0.18)',
-          transform:
-            'rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg))',
+          transform: 'rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg))',
           transformStyle: 'preserve-3d',
+          transition: CARD_TRANSITION,
         }}
       >
-        <p className="relative z-10 mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
-          AMAR 100
+        <p
+          className="relative z-10 mb-4 text-xs font-semibold uppercase tracking-[0.18em]"
+          style={{ color: 'var(--card-text-muted)' }}
+        >
+          {variant.kicker}
         </p>
-        <h1 className="relative z-10 m-0 text-[clamp(1.6rem,5vw,2.25rem)] font-semibold leading-[1.05] tracking-tight text-white/95">
+        <h1
+          className="relative z-10 m-0 text-[clamp(1.6rem,5vw,2.25rem)] font-semibold leading-[1.05] tracking-tight"
+          style={{ color: 'var(--card-text)' }}
+        >
           Josefina
           <br />
           Staudenmaier
         </h1>
-        <span className="absolute bottom-6 left-8 z-10 text-xs font-medium text-white/55">
+        <span
+          className="absolute bottom-6 left-8 z-10 text-xs font-medium"
+          style={{ color: 'var(--card-text-faint)' }}
+        >
           #001
         </span>
         <svg
-          className="pointer-events-none absolute -bottom-3 -right-2 h-auto w-[170px] opacity-35"
+          className="pointer-events-none absolute -bottom-3 -right-2 h-auto w-[170px]"
+          style={{ color: 'var(--card-svg)', transition: 'color 200ms ease' }}
           width="138"
           height="169"
           viewBox="0 0 138 169"
@@ -171,7 +316,7 @@ function App() {
                 fillRule="evenodd"
                 clipRule="evenodd"
                 d="M115.874 158.321C115.667 157.68 115.48 157.116 115.307 156.547C114.483 153.827 113.777 151.079 113.23 148.299C112.505 144.64 112.031 140.953 111.798 137.234C111.641 134.765 111.591 132.294 111.635 129.82C111.689 126.701 111.882 123.585 112.159 120.475C112.48 116.884 112.824 113.294 113.118 109.701C113.352 106.847 113.44 103.986 113.299 101.127C113.093 96.892 112.187 92.8018 110.524 88.858C109.68 86.8626 108.838 84.8694 107.817 82.9449C107.725 82.7703 107.66 82.6157 107.76 82.402C108.905 79.994 110.056 77.5839 111.561 75.3452C113.017 73.1781 114.815 71.285 116.783 69.5257C117.036 69.3008 117.268 69.0581 117.543 68.8642C118.01 68.5381 118.246 68.0979 118.425 67.5961C119.279 65.2125 119.918 62.7802 120.4 60.3142C121.079 56.8168 121.686 53.3057 122.331 49.805C122.518 48.8036 122.729 47.8039 122.95 46.8061C123.021 46.4978 123.089 46.1717 123.353 45.9281C123.656 45.9581 123.816 46.1646 123.962 46.3533C124.406 46.9238 124.852 47.4988 125.246 48.1027C126.883 50.6087 128.263 53.2425 129.568 55.9123C129.919 56.6307 130.256 57.3541 130.609 58.0972C130.804 58.0034 130.799 57.8309 130.846 57.6913C131.445 55.8139 131.858 53.8966 132.258 51.9748C132.583 50.4071 132.916 48.8367 133.273 47.2725C133.383 46.7838 133.57 46.3111 133.73 45.8346C133.764 45.7315 133.829 45.6368 133.902 45.4941C134.044 45.6465 134.158 45.7592 134.261 45.8809C136.096 48.0525 137.422 50.4836 138.399 53.0879C139.656 56.4486 140.327 59.917 140.548 63.4727C140.649 65.0852 140.669 66.7001 140.579 68.318C140.571 68.4612 140.577 68.6063 140.575 68.7878C140.746 68.8578 140.915 68.9235 141.086 68.9934C142.69 69.6629 144.313 70.2864 145.892 71.0041C147.699 71.822 149.352 72.8666 150.735 74.2523C151.623 75.1439 152.347 76.1377 152.915 77.2331C152.973 77.3473 153.042 77.4633 153.072 77.5896C153.281 78.482 153.844 79.1628 154.523 79.7718C155.401 80.5571 156.405 81.1822 157.45 81.7472C159.887 83.0623 162.475 84.069 165.102 84.9932C169.483 86.5349 173.959 87.8015 178.47 88.9694C179.047 89.1211 179.506 89.4371 179.893 89.805C180.211 90.1093 180.166 90.5869 180.086 91.0042C179.655 93.1901 179.019 95.3202 178.079 97.366C177.321 99.0098 176.373 100.545 175.158 101.934C173.086 104.307 170.473 105.91 167.357 106.814C165.669 107.307 163.923 107.529 162.181 107.728C158.811 108.109 155.432 108.431 152.061 108.803C150.16 109.011 148.28 109.343 146.451 109.894C142.869 110.977 140.552 113.228 139.399 116.58C138.363 119.597 137.473 122.658 136.632 125.724C135.861 128.543 135.095 131.364 134.117 134.131C132.342 139.163 129.626 143.716 126.165 147.893C123.115 151.571 119.696 154.932 116.113 158.146C116.064 158.191 116.009 158.224 115.874 158.325"
-                fill="#ffffff"
+                fill="currentColor"
               />
             </g>
             <path
@@ -183,7 +328,7 @@ function App() {
             <g filter="url(#filter1_i_5028_11035)">
               <path
                 d="M112.537 98.7342C112.605 99.3031 112.67 99.8697 112.737 100.438C112.73 100.53 112.708 100.624 112.716 100.715C112.757 101.301 112.83 101.885 112.846 102.473C112.873 103.42 112.88 104.371 112.875 105.319C112.875 106.106 112.863 106.896 112.824 107.681C112.779 108.617 112.71 109.553 112.636 110.487C112.531 111.83 112.42 113.17 112.293 114.512C112.136 116.175 111.943 117.834 111.798 119.497C111.62 121.591 111.46 123.687 111.314 125.784C111.226 127.035 111.163 128.287 111.13 129.541C111.097 130.726 111.104 131.912 111.115 133.095C111.124 134.179 111.142 135.261 111.19 136.346C111.234 137.384 111.293 138.421 111.398 139.452C111.552 141.002 111.75 142.548 111.939 144.094C112.002 144.598 112.082 145.1 112.173 145.601C112.341 146.537 112.52 147.473 112.703 148.408C112.821 149.007 112.946 149.605 113.083 150.201C113.231 150.841 113.396 151.477 113.559 152.114C113.725 152.765 113.883 153.422 114.068 154.07C114.31 154.913 114.565 155.755 114.827 156.595C115.01 157.176 115.21 157.752 115.403 158.333C115.369 158.338 115.335 158.342 115.298 158.343C115.245 158.308 115.193 158.266 115.133 158.236C112.339 156.868 109.608 155.402 106.979 153.785C103.568 151.692 100.36 149.377 97.4341 146.742C94.3397 143.949 91.6759 140.852 89.4016 137.474C87.8392 135.15 86.4681 132.732 85.1454 130.291C83.636 127.504 82.1776 124.692 80.4772 121.996C79.4137 120.302 78.2945 118.647 76.9825 117.103C76.2518 116.247 75.3587 115.555 74.2356 115.145C72.815 114.626 71.3567 114.689 69.9138 115.033C68.5882 115.349 67.2837 115.736 65.9765 116.105C64.1339 116.623 62.2821 117.081 60.3302 117.034C59.0951 117.006 57.9017 116.801 56.7704 116.358C55.5198 115.87 54.5279 115.06 53.6096 114.172C52.1588 112.761 50.9562 111.179 49.7339 109.606C48.9141 108.546 48.1035 107.478 47.2782 106.405C47.3575 106.338 47.434 106.276 47.5108 106.211C48.3932 105.484 49.1476 104.66 49.782 103.748C50.947 102.079 51.71 100.252 52.1884 98.3388C52.7287 96.1899 53.1755 94.0237 53.6617 91.8631C54.1043 89.9021 54.604 87.9573 55.4446 86.0945C56.5758 83.5856 58.2706 81.4733 60.7466 79.9167C60.9418 79.795 60.9422 79.6324 60.9668 79.4622C61.1707 77.9962 60.8567 76.6072 60.2322 75.265C59.5922 73.8831 58.6719 72.6585 57.7343 71.4341C56.8502 70.28 55.9711 69.1188 55.1254 67.9388C54.6837 67.3271 54.4165 66.639 54.2707 65.9117C54.2482 65.8011 54.1834 65.6801 54.3854 65.6254C55.1793 65.4113 55.9881 65.297 56.8125 65.2982C58.3266 65.3025 59.7783 65.6158 61.1529 66.159C62.7807 66.8063 64.3739 67.5236 65.9855 68.2072C67.1156 68.6881 68.2638 69.1215 69.4968 69.343C69.6671 69.3739 69.7643 69.3421 69.8713 69.2165C70.493 68.4745 70.5243 67.6664 70.233 66.821C69.931 65.9422 69.3987 65.1725 68.8643 64.4029C68.2833 63.5587 67.693 62.7192 67.1459 61.8563C66.8736 61.4295 66.723 60.9543 66.8654 60.4397C66.9234 60.2308 67.0403 60.1137 67.2841 60.1491C67.8509 60.2358 68.4311 60.275 68.9752 60.4225C70.3968 60.8105 71.6031 61.5588 72.7381 62.3916C73.8981 63.2439 75.0176 64.1354 76.1636 65.0014C77.1111 65.7149 78.0849 66.3917 79.2167 66.857C80.5746 67.416 82.0283 67.6226 83.4906 67.7998C84.8866 67.9697 86.3052 68.0723 87.666 68.3839C92.4668 69.4767 96.571 71.7083 100.068 74.8643C103.057 77.5622 105.347 80.7102 107.208 84.1309C108.199 85.9509 109.068 87.8215 109.863 89.7185C110.647 91.6002 111.4 93.4894 111.87 95.4581C112.11 96.4811 112.267 97.5157 112.461 98.5446C112.472 98.6135 112.513 98.6725 112.537 98.7342Z"
-                fill="#ffffff"
+                fill="currentColor"
               />
             </g>
             <path
@@ -197,7 +342,7 @@ function App() {
             <g filter="url(#filter2_i_5028_11035)">
               <path
                 d="M124.283 196.377C123.219 196.407 122.139 196.117 121.222 195.479L116.538 192.223C61.3415 153.869 9.20699 117.641 2.19015 71.4246C0.280999 58.8454 3.74309 46.0273 11.9462 35.327C19.6751 25.245 30.8006 17.8593 43.2756 14.5335C61.4956 9.67811 85.0939 13.5908 101.034 36.9983C104.838 27.0108 110.893 18.7263 118.892 12.6795C128.562 5.36484 141.067 1.42209 154.109 1.57601C166.977 1.72569 179.528 5.7396 189.453 12.8766C200.281 20.6639 206.992 31.307 208.867 43.6537C215.518 87.5138 177.975 133.449 138.23 182.084C134.844 186.227 131.444 190.389 128.056 194.567C127.125 195.715 125.72 196.339 124.286 196.38M56.2888 21.6887C52.9122 21.7841 49.4532 22.294 45.9349 23.232C26.4695 28.4204 8.39814 47.3777 11.8519 70.1255C18.3069 112.635 68.8742 147.774 122.412 184.972L123.206 185.525C125.624 182.554 128.046 179.588 130.462 176.636C168.942 129.551 205.289 85.0791 199.203 44.9506C196.652 28.1263 180.285 10.9341 153.945 10.6245C125.183 10.2822 111.038 30.8377 107.385 50.1804C107.013 52.1497 105.297 53.6619 103.16 53.9102C101.022 54.1536 98.9711 53.0755 98.1091 51.2488C88.8891 31.7198 73.7058 21.1968 56.2888 21.6887Z"
-                fill="#ffffff"
+                fill="currentColor"
               />
             </g>
             <path
@@ -280,6 +425,50 @@ function App() {
           </defs>
         </svg>
 
+        {/* Saturated pink/violet/coral tint — covers the entire silhouette, intensity follows --hi */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              'conic-gradient(from calc(var(--fx, 50) * 1.8deg) at 50% 50%,' +
+              ' #ff3d8b, #ff5677, #ff8a4c, #c84cff, #a836ff, #ff3d8b)',
+            WebkitMaskImage: HEART_CAT_MASK_URL,
+            WebkitMaskSize: '170px auto',
+            WebkitMaskPosition: 'right -8px bottom -12px',
+            WebkitMaskRepeat: 'no-repeat',
+            maskImage: HEART_CAT_MASK_URL,
+            maskSize: '170px auto',
+            maskPosition: 'right -8px bottom -12px',
+            maskRepeat: 'no-repeat',
+            mixBlendMode: 'plus-lighter',
+            opacity: 'calc(var(--hi, 0) * 0.85)',
+            filter: 'hue-rotate(var(--card-holo-hue))',
+            transition: 'filter 200ms ease',
+          }}
+        />
+        {/* Bright specular core — small hot-spot inside the silhouette */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(circle at calc(var(--fx, 50) * 1%) calc(var(--fy, 50) * 1%), rgba(255,220,235,0.6) 0%, rgba(255,150,200,0.22) 5%, transparent 13%)',
+            WebkitMaskImage: HEART_CAT_MASK_URL,
+            WebkitMaskSize: '170px auto',
+            WebkitMaskPosition: 'right -8px bottom -12px',
+            WebkitMaskRepeat: 'no-repeat',
+            maskImage: HEART_CAT_MASK_URL,
+            maskSize: '170px auto',
+            maskPosition: 'right -8px bottom -12px',
+            maskRepeat: 'no-repeat',
+            mixBlendMode: 'color-dodge',
+            opacity: 'calc(var(--hi, 0) * 0.6)',
+            filter: 'hue-rotate(var(--card-holo-hue))',
+            transition: 'filter 200ms ease',
+          }}
+        />
+
         {/* Reflective highlight (follows pointer/gyro) */}
         <div
           aria-hidden
@@ -301,6 +490,37 @@ function App() {
             mixBlendMode: 'overlay',
           }}
         />
+
+        {/* Gradient border ring (FFF → variant accent, 15% opacity) */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-[24px]"
+          style={{
+            padding: 'var(--card-border-w)',
+            background:
+              'linear-gradient(180deg, #ffffff 0%, var(--card-border-c) 100%)',
+            opacity: 0.15,
+            WebkitMask:
+              'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+            WebkitMaskComposite: 'xor',
+            mask:
+              'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+            maskComposite: 'exclude',
+          }}
+        />
+
+        {/* Full-card film-grain noise */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-[24px]"
+          style={{
+            backgroundImage: NOISE_URL,
+            backgroundSize: '160px 160px',
+            backgroundRepeat: 'repeat',
+            mixBlendMode: 'overlay',
+            opacity: 0.18,
+          }}
+        />
       </article>
 
       {needsPermission && (
@@ -311,7 +531,8 @@ function App() {
               window as unknown as { __amarAttachGyro?: () => void }
             ).__amarAttachGyro?.()
           }
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-[#5a3f88] shadow-lg backdrop-blur"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold shadow-lg backdrop-blur"
+          style={{ color: variant.vars['--card-c3'] }}
         >
           Activar movimiento
         </button>
