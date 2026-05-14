@@ -15,13 +15,12 @@ function App() {
     if (typeof window === 'undefined') return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-    const stage = stageRef.current
     const card = cardRef.current
-    if (!stage || !card) return
+    if (!card) return
 
     const target = { mx: 50, my: 50, tx: 0, ty: 0 }
     const current = { ...target }
-    let usingGyro = false
+    let lastPointerAt = 0
 
     const apply = () => {
       card.style.setProperty('--mx', current.mx.toFixed(2))
@@ -41,17 +40,26 @@ function App() {
     }
     let raf = requestAnimationFrame(loop)
 
+    const MAX_TILT = 10
+    const FALLOFF = 380 // px — distance at which influence is halved
+
     const onPointerMove = (e: PointerEvent) => {
-      if (usingGyro) return
-      const nx = e.clientX / window.innerWidth
-      const ny = e.clientY / window.innerHeight
-      target.mx = clamp(50 + (nx - 0.5) * 30, 0, 100)
-      target.my = clamp(50 + (ny - 0.5) * 30, 0, 100)
-      target.tx = (nx - 0.5) * 18
-      target.ty = -(ny - 0.5) * 18
+      lastPointerAt = performance.now()
+      const rect = card.getBoundingClientRect()
+      const cx = rect.left + rect.width / 2
+      const cy = rect.top + rect.height / 2
+      const dx = e.clientX - cx
+      const dy = e.clientY - cy
+      const dist = Math.hypot(dx, dy)
+      const strength = FALLOFF / (FALLOFF + dist) // 1 at center, decays with distance
+      const dirX = dist > 0 ? dx / dist : 0
+      const dirY = dist > 0 ? dy / dist : 0
+      target.tx = clamp(dirX * MAX_TILT * strength, -MAX_TILT, MAX_TILT)
+      target.ty = clamp(-dirY * MAX_TILT * strength, -MAX_TILT, MAX_TILT)
+      target.mx = clamp(50 + dirX * 15 * strength, 0, 100)
+      target.my = clamp(50 + dirY * 15 * strength, 0, 100)
     }
     const onPointerLeave = () => {
-      if (usingGyro) return
       target.mx = 50
       target.my = 50
       target.tx = 0
@@ -59,7 +67,9 @@ function App() {
     }
 
     const onOrient = (e: DeviceOrientationEvent) => {
-      usingGyro = true
+      // Pointer takes priority for ~2s after any movement
+      if (performance.now() - lastPointerAt < 2000) return
+      if (e.gamma == null && e.beta == null) return
       const gx = clamp((e.gamma ?? 0) / 4, -9, 9)
       const gy = clamp((e.beta ?? 0) / 5, -9, 9)
       target.tx = gx
