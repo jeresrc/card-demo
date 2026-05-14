@@ -43,9 +43,8 @@ function App() {
 
     const onPointerMove = (e: PointerEvent) => {
       if (usingGyro) return
-      const r = stage.getBoundingClientRect()
-      const nx = (e.clientX - r.left) / r.width
-      const ny = (e.clientY - r.top) / r.height
+      const nx = e.clientX / window.innerWidth
+      const ny = e.clientY / window.innerHeight
       target.mx = clamp(50 + (nx - 0.5) * 30, 0, 100)
       target.my = clamp(50 + (ny - 0.5) * 30, 0, 100)
       target.tx = (nx - 0.5) * 18
@@ -69,8 +68,8 @@ function App() {
       target.my = clamp(50 + gy * 5, 0, 100)
     }
 
-    stage.addEventListener('pointermove', onPointerMove)
-    stage.addEventListener('pointerleave', onPointerLeave)
+    window.addEventListener('pointermove', onPointerMove)
+    document.addEventListener('pointerleave', onPointerLeave)
 
     type DOECtor = typeof DeviceOrientationEvent & {
       requestPermission?: () => Promise<'granted' | 'denied'>
@@ -100,8 +99,8 @@ function App() {
 
     return () => {
       cancelAnimationFrame(raf)
-      stage.removeEventListener('pointermove', onPointerMove)
-      stage.removeEventListener('pointerleave', onPointerLeave)
+      window.removeEventListener('pointermove', onPointerMove)
+      document.removeEventListener('pointerleave', onPointerLeave)
       window.removeEventListener('deviceorientation', onOrient)
       delete (window as unknown as { __amarAttachGyro?: () => void })
         .__amarAttachGyro
@@ -125,7 +124,7 @@ function App() {
             ' calc((50 - var(--mx, 50)) * 0.25px) calc((50 - var(--my, 50)) * 0.25px + 14px) 28px -12px rgba(0, 0, 0, 0.35),' +
             ' 0 2px 4px rgba(0, 0, 0, 0.18)',
           transform:
-            'rotate(-4deg) rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg))',
+            'rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg))',
           transformStyle: 'preserve-3d',
         }}
       >
