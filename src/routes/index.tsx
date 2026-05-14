@@ -65,8 +65,8 @@ function App() {
       const gy = clamp((e.beta ?? 0) / 16, -3, 3)
       target.tx = gx
       target.ty = -gy
-      target.mx = clamp(50 + gx * 10, 0, 100)
-      target.my = clamp(50 + gy * 10, 0, 100)
+      target.mx = clamp(50 + gx * 5, 0, 100)
+      target.my = clamp(50 + gy * 5, 0, 100)
     }
 
     stage.addEventListener('pointermove', onPointerMove)
@@ -116,7 +116,7 @@ function App() {
     >
       <article
         ref={cardRef}
-        className="relative isolate aspect-[7/9] w-[min(440px,88vw)] overflow-hidden rounded-[28px] px-10 py-9 text-white will-change-transform"
+        className="relative isolate aspect-[7/9] w-[min(360px,82vw)] overflow-hidden rounded-[24px] px-8 py-7 text-white will-change-transform"
         style={{
           background:
             'linear-gradient(160deg, #7558ad 0%, #694C9A 55%, #5a3f88 100%)',
@@ -277,18 +277,18 @@ function App() {
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              'radial-gradient(420px circle at calc(var(--mx, 50) * 1%) calc(var(--my, 50) * 1%), rgba(255,255,255,0.45), rgba(255,255,255,0.12) 18%, transparent 45%)',
+              'radial-gradient(480px circle at calc(var(--mx, 50) * 1%) calc(var(--my, 50) * 1%), rgba(255,255,255,0.3), rgba(255,255,255,0.08) 22%, transparent 55%)',
             mixBlendMode: 'soft-light',
           }}
         />
         {/* Diagonal sheen band */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-25"
+          className="pointer-events-none absolute inset-0 opacity-15"
           style={{
             background:
-              'linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.55) 50%, transparent 60%)',
-            transform: 'translateX(calc((var(--mx, 50) - 50) * 1.2%))',
+              'linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.4) 50%, transparent 58%)',
+            transform: 'translateX(calc((var(--mx, 50) - 50) * 0.6%))',
             mixBlendMode: 'overlay',
           }}
         />
