@@ -46,10 +46,10 @@ function App() {
       const r = stage.getBoundingClientRect()
       const nx = (e.clientX - r.left) / r.width
       const ny = (e.clientY - r.top) / r.height
-      target.mx = clamp(nx * 100, 0, 100)
-      target.my = clamp(ny * 100, 0, 100)
-      target.tx = (nx - 0.5) * 12
-      target.ty = -(ny - 0.5) * 12
+      target.mx = clamp(50 + (nx - 0.5) * 30, 0, 100)
+      target.my = clamp(50 + (ny - 0.5) * 30, 0, 100)
+      target.tx = (nx - 0.5) * 6
+      target.ty = -(ny - 0.5) * 6
     }
     const onPointerLeave = () => {
       if (usingGyro) return
@@ -61,12 +61,12 @@ function App() {
 
     const onOrient = (e: DeviceOrientationEvent) => {
       usingGyro = true
-      const gx = clamp((e.gamma ?? 0) / 6, -6, 6)
-      const gy = clamp((e.beta ?? 0) / 8, -6, 6)
+      const gx = clamp((e.gamma ?? 0) / 12, -3, 3)
+      const gy = clamp((e.beta ?? 0) / 16, -3, 3)
       target.tx = gx
       target.ty = -gy
-      target.mx = clamp(50 + gx * 6, 0, 100)
-      target.my = clamp(50 + gy * 6, 0, 100)
+      target.mx = clamp(50 + gx * 10, 0, 100)
+      target.my = clamp(50 + gy * 10, 0, 100)
     }
 
     stage.addEventListener('pointermove', onPointerMove)
@@ -121,7 +121,9 @@ function App() {
           background:
             'linear-gradient(160deg, #7558ad 0%, #694C9A 55%, #5a3f88 100%)',
           boxShadow:
-            '0 30px 60px -20px rgba(60, 40, 100, 0.45), 0 12px 24px -10px rgba(0, 0, 0, 0.25)',
+            'calc((50 - var(--mx, 50)) * 0.6px) calc((50 - var(--my, 50)) * 0.6px + 34px) 70px -22px rgba(50, 30, 95, 0.55),' +
+            ' calc((50 - var(--mx, 50)) * 0.25px) calc((50 - var(--my, 50)) * 0.25px + 14px) 28px -12px rgba(0, 0, 0, 0.35),' +
+            ' 0 2px 4px rgba(0, 0, 0, 0.18)',
           transform:
             'rotate(-4deg) rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg))',
           transformStyle: 'preserve-3d',
