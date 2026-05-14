@@ -129,19 +129,19 @@ function App() {
           transformStyle: 'preserve-3d',
         }}
       >
-        <p className="relative z-10 mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-white/70">
+        <p className="relative z-10 mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
           AMAR 100
         </p>
-        <h1 className="relative z-10 m-0 text-[clamp(2rem,6vw,2.75rem)] font-semibold leading-[1.05] tracking-tight text-white/95">
+        <h1 className="relative z-10 m-0 text-[clamp(1.6rem,5vw,2.25rem)] font-semibold leading-[1.05] tracking-tight text-white/95">
           Josefina
           <br />
           Staudenmaier
         </h1>
-        <span className="absolute bottom-8 left-10 z-10 text-sm font-medium text-white/55">
+        <span className="absolute bottom-6 left-8 z-10 text-xs font-medium text-white/55">
           #001
         </span>
         <svg
-          className="pointer-events-none absolute -bottom-4 -right-2 h-auto w-[210px] opacity-35"
+          className="pointer-events-none absolute -bottom-3 -right-2 h-auto w-[170px] opacity-35"
           width="138"
           height="169"
           viewBox="0 0 138 169"
