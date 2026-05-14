@@ -48,8 +48,8 @@ function App() {
       const ny = (e.clientY - r.top) / r.height
       target.mx = clamp(50 + (nx - 0.5) * 30, 0, 100)
       target.my = clamp(50 + (ny - 0.5) * 30, 0, 100)
-      target.tx = (nx - 0.5) * 6
-      target.ty = -(ny - 0.5) * 6
+      target.tx = (nx - 0.5) * 18
+      target.ty = -(ny - 0.5) * 18
     }
     const onPointerLeave = () => {
       if (usingGyro) return
@@ -61,8 +61,8 @@ function App() {
 
     const onOrient = (e: DeviceOrientationEvent) => {
       usingGyro = true
-      const gx = clamp((e.gamma ?? 0) / 12, -3, 3)
-      const gy = clamp((e.beta ?? 0) / 16, -3, 3)
+      const gx = clamp((e.gamma ?? 0) / 4, -9, 9)
+      const gy = clamp((e.beta ?? 0) / 5, -9, 9)
       target.tx = gx
       target.ty = -gy
       target.mx = clamp(50 + gx * 5, 0, 100)
@@ -277,17 +277,17 @@ function App() {
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              'radial-gradient(480px circle at calc(var(--mx, 50) * 1%) calc(var(--my, 50) * 1%), rgba(255,255,255,0.3), rgba(255,255,255,0.08) 22%, transparent 55%)',
+              'radial-gradient(420px circle at calc(var(--mx, 50) * 1%) calc(var(--my, 50) * 1%), rgba(255,255,255,0.45), rgba(255,255,255,0.12) 18%, transparent 45%)',
             mixBlendMode: 'soft-light',
           }}
         />
         {/* Diagonal sheen band */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-15"
+          className="pointer-events-none absolute inset-0 opacity-25"
           style={{
             background:
-              'linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.4) 50%, transparent 58%)',
+              'linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.55) 50%, transparent 60%)',
             transform: 'translateX(calc((var(--mx, 50) - 50) * 0.6%))',
             mixBlendMode: 'overlay',
           }}
